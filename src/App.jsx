@@ -246,7 +246,14 @@ export default function App() {
           <WheelIcon size={26} />
           <span className="brand-name">RICKSHA WALA</span>
         </button>
-        <span className="nav-pill mono">FULL JOSH</span>
+        <a
+          className="nav-pill mono"
+          href="https://www.linkedin.com/in/sonu-profile-url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Creator
+        </a>
         <div className="pinstripe nav-pinstripe"></div>
       </nav>
 
