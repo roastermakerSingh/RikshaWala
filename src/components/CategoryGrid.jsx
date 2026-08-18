@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { WheelIcon } from "./Icons.jsx";
 
-function TiltCard({ cat, onSelect }) {
+function TiltCard({ cat, onSelect, isPlaying }) {
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -23,12 +23,13 @@ function TiltCard({ cat, onSelect }) {
   return (
     <button
       ref={cardRef}
-      className="category-card"
+      className={"category-card" + (isPlaying ? " is-playing" : "")}
       style={{ "--cat-accent": cat.accent }}
       onClick={() => onSelect(cat)}
       onMouseMove={handleMouseMove}
       onMouseLeave={resetTilt}
     >
+      {isPlaying && <span className="category-playing-badge mono">▶ Playing</span>}
       <div className="category-card-icon" style={{ background: cat.accent }}>
         <WheelIcon size={26} />
       </div>
@@ -42,11 +43,11 @@ function TiltCard({ cat, onSelect }) {
   );
 }
 
-export default function CategoryGrid({ categories, onSelect }) {
+export default function CategoryGrid({ categories, onSelect, playingCategoryId }) {
   return (
     <div className="category-grid">
       {categories.map((cat) => (
-        <TiltCard key={cat.id} cat={cat} onSelect={onSelect} />
+        <TiltCard key={cat.id} cat={cat} onSelect={onSelect} isPlaying={cat.id === playingCategoryId} />
       ))}
     </div>
   );

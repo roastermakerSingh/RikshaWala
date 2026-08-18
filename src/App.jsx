@@ -17,8 +17,17 @@ import InstallPrompt from "./components/InstallPrompt.jsx";
 
 const YT_STATE = { ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 };
 
+// NOTE ON STATE SHAPE:
+// `viewCategoryId` is which category the person is currently BROWSING
+// (what's shown on screen). `playingCategoryId` is which category's queue is
+// actually LOADED into the player. These are deliberately separate — going
+// "back" to the category grid only changes what you're looking at; it must
+// never touch playback, so a song keeps running (like YouTube's mini-player)
+// while you browse elsewhere.
+
 export default function App() {
-  const [categoryId, setCategoryId] = useState(null); // null = home
+  const [viewCategoryId, setViewCategoryId] = useState(null); // null = home/browsing all categories
+  const [playingCategoryId, setPlayingCategoryId] = useState(null); // which queue is loaded
   const [currentIndex, setCurrentIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -43,20 +52,27 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const activeCategory = useMemo(
-    () => CATEGORIES.find((c) => c.id === categoryId) || null,
-    [categoryId]
+  const viewCategory = useMemo(
+    () => CATEGORIES.find((c) => c.id === viewCategoryId) || null,
+    [viewCategoryId]
   );
 
-  const songs = activeCategory ? activeCategory.songs : [];
+  const playingCategory = useMemo(
+    () => CATEGORIES.find((c) => c.id === playingCategoryId) || null,
+    [playingCategoryId]
+  );
 
+  // The queue actually loaded in the player — independent of what's on screen.
+  const queue = playingCategory ? playingCategory.songs : [];
+  const currentSong = queue[currentIndex];
+
+  // The list shown on screen — always follows whatever category you're viewing.
+  const viewSongs = viewCategory ? viewCategory.songs : [];
   const filteredSongs = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return songs;
-    return songs.filter((s) => s.title.toLowerCase().includes(q));
-  }, [songs, query]);
-
-  const currentSong = songs[currentIndex];
+    if (!q) return viewSongs;
+    return viewSongs.filter((s) => s.title.toLowerCase().includes(q));
+  }, [viewSongs, query]);
 
   const loadCurrentSong = useCallback(
     async (autoplay) => {
@@ -89,7 +105,7 @@ export default function App() {
   useEffect(() => {
     if (playerReady && currentSong) loadCurrentSong(wantPlayRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, playerReady, categoryId]);
+  }, [currentIndex, playerReady, playingCategoryId]);
 
   useEffect(() => {
     if (playerRef.current) playerRef.current.setVolume(volume);
@@ -110,6 +126,22 @@ export default function App() {
     setMediaSessionPlaybackState(playing);
   }, [playing]);
 
+  const goNext = useCallback(() => {
+    setCurrentIndex((c) => {
+      if (queue.length === 0) return c;
+      if (shuffle && queue.length > 1) {
+        let next = Math.floor(Math.random() * queue.length);
+        if (next === c) next = (next + 1) % queue.length;
+        return next;
+      }
+      return (c + 1) % queue.length;
+    });
+  }, [shuffle, queue.length]);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((c) => (queue.length ? (c - 1 + queue.length) % queue.length : c));
+  }, [queue.length]);
+
   useEffect(() => {
     registerMediaSessionHandlers({
       onPlay: () => playerRef.current && playerRef.current.play(),
@@ -123,8 +155,7 @@ export default function App() {
         goPrev();
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [songs.length, shuffle]);
+  }, [goNext, goPrev]);
 
   useEffect(() => {
     if (playing) {
@@ -139,22 +170,6 @@ export default function App() {
     }
     return () => pollRef.current && clearInterval(pollRef.current);
   }, [playing]);
-
-  const goNext = useCallback(() => {
-    setCurrentIndex((c) => {
-      if (songs.length === 0) return c;
-      if (shuffle && songs.length > 1) {
-        let next = Math.floor(Math.random() * songs.length);
-        if (next === c) next = (next + 1) % songs.length;
-        return next;
-      }
-      return (c + 1) % songs.length;
-    });
-  }, [shuffle, songs.length]);
-
-  const goPrev = () => {
-    setCurrentIndex((c) => (songs.length ? (c - 1 + songs.length) % songs.length : c));
-  };
 
   const handlePlayerStateChange = (state) => {
     if (state === YT_STATE.PLAYING) setPlaying(true);
@@ -180,9 +195,13 @@ export default function App() {
     else playerRef.current.play();
   };
 
+  // Selecting a song always starts/replaces the PLAYING queue with whatever
+  // category the song came from — separate from which category you're viewing.
   const selectSong = (song) => {
-    const idx = songs.findIndex((s) => s.id === song.id);
+    if (!viewCategory) return;
+    const idx = viewCategory.songs.findIndex((s) => s.id === song.id);
     wantPlayRef.current = true;
+    setPlayingCategoryId(viewCategory.id);
     setCurrentIndex(idx);
   };
 
@@ -194,21 +213,20 @@ export default function App() {
     }
   };
 
+  // Just changes what's on screen — playback is untouched.
   const openCategory = (cat) => {
-    setCategoryId(cat.id);
-    setCurrentIndex(0);
+    setViewCategoryId(cat.id);
     setQuery("");
-    wantPlayRef.current = false;
-    setPlaying(false);
-    setStatus("idle");
   };
 
+  // Just changes what's on screen — playback keeps running, like a
+  // minimized/background player, exactly like navigating within the YouTube app.
   const goHome = () => {
-    if (playerRef.current) playerRef.current.pause();
-    setPlaying(false);
-    setCategoryId(null);
+    setViewCategoryId(null);
     setQuery("");
   };
+
+  const isViewingPlayingCategory = viewCategoryId === playingCategoryId && playingCategoryId !== null;
 
   return (
     <>
@@ -234,7 +252,7 @@ export default function App() {
 
       <InstallPrompt />
 
-      {activeCategory && currentSong && playing && (
+      {currentSong && playing && (
         <div className="now-playing-ribbon">
           <div className="now-playing-ribbon-track">
             <span>♪ Now playing: {currentSong.title} — {currentSong.artist || "Bhojpuri"} ♪</span>
@@ -243,36 +261,36 @@ export default function App() {
         </div>
       )}
 
-      <div key={activeCategory ? activeCategory.id : "home"} className="view-transition">
-      {!activeCategory && (
+      <div key={viewCategory ? viewCategory.id : "home"} className="view-transition">
+      {!viewCategory && (
         <>
           <Hero playing={false} />
           <div className="section-label">
             <h2>Choose your playlist</h2>
             <span className="count mono">{CATEGORIES.length} categories</span>
           </div>
-          <CategoryGrid categories={CATEGORIES} onSelect={openCategory} />
+          <CategoryGrid categories={CATEGORIES} onSelect={openCategory} playingCategoryId={playingCategoryId} />
         </>
       )}
 
-      {activeCategory && (
+      {viewCategory && (
         <>
           <div className="category-header">
             <button className="back-btn" onClick={goHome}>
               &larr; All categories
             </button>
-            <h2>{activeCategory.name}</h2>
-            <p className="category-header-tagline">{activeCategory.tagline}</p>
+            <h2>{viewCategory.name}</h2>
+            <p className="category-header-tagline">{viewCategory.tagline}</p>
           </div>
 
           <SearchBar value={query} onChange={setQuery} />
 
           <div className="section-label">
-            <h2>{activeCategory.name}</h2>
+            <h2>{viewCategory.name}</h2>
             <span className="count mono">{filteredSongs.length} tracks</span>
           </div>
 
-          {status === "error" && (
+          {status === "error" && isViewingPlayingCategory && (
             <div className="status-banner status-error">{errorMessage}</div>
           )}
           {!import.meta.env.VITE_YOUTUBE_API_KEY && (
@@ -283,9 +301,9 @@ export default function App() {
 
           <Playlist
             songs={filteredSongs}
-            currentId={currentSong && currentSong.id}
+            currentId={isViewingPlayingCategory && currentSong ? currentSong.id : null}
             playing={playing}
-            loading={status === "resolving"}
+            loading={isViewingPlayingCategory && status === "resolving"}
             duration={duration}
             onSelect={selectSong}
           />
@@ -293,7 +311,7 @@ export default function App() {
       )}
       </div>
 
-      {activeCategory && currentSong && (
+      {currentSong && (
         <PlayerBar
           song={currentSong}
           index={currentIndex}

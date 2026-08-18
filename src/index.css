@@ -208,6 +208,19 @@ input:focus-visible,
 }
 .category-card:hover::before{transform:scaleX(1);}
 .category-card:active{transform:scale(0.98) !important;}
+.category-card.is-playing{
+  border-color:var(--cat-accent,var(--green));
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--cat-accent,var(--green)) 20%, transparent);
+}
+.category-card.is-playing::before{transform:scaleX(1);}
+.category-playing-badge{
+  position:absolute;top:12px;right:12px;
+  background:var(--cat-accent,var(--green));
+  color:#fff;
+  font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:999px;
+  letter-spacing:0.3px;
+}
 .category-card-icon{
   width:54px;height:54px;border-radius:15px;
   display:flex;align-items:center;justify-content:center;
