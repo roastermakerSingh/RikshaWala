@@ -380,3 +380,61 @@ button{font-family:inherit;}
   .section-label{padding:0 16px;}
   .search-wrap{padding:0 16px;}
 }
+
+/* ---------- NOW PLAYING RIBBON ---------- */
+.now-playing-ribbon{
+  background:var(--green-dark);
+  overflow:hidden;
+  white-space:nowrap;
+  padding:6px 0;
+}
+.now-playing-ribbon-track{
+  display:inline-flex;
+  gap:60px;
+  animation:marquee 14s linear infinite;
+  color:#e9f5ec;
+  font-family:'Space Mono',monospace;
+  font-size:12px;
+}
+.now-playing-ribbon-track span{padding-right:60px;}
+@keyframes marquee{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+
+/* ---------- VIEW TRANSITION ---------- */
+.view-transition{
+  animation:fadeSlideIn .35s ease both;
+}
+@keyframes fadeSlideIn{
+  from{ opacity:0; transform:translateY(8px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* ---------- PLAY BUTTON PULSE ---------- */
+.play-btn-wrap{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.play-btn-pulse{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  border-radius:50%;
+  background:var(--yellow);
+  opacity:0.5;
+  animation:pulseRing 1.6s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes pulseRing{
+  0%{ transform:scale(1); opacity:0.5; }
+  100%{ transform:scale(1.9); opacity:0; }
+}
+
+/* ---------- LOCK SCREEN HINT ---------- */
+.lock-screen-hint{
+  max-width:1000px;margin:6px auto 0;
+  text-align:center;
+  font-size:10px;
+  color:#6a6a60;
+  letter-spacing:0.3px;
+}

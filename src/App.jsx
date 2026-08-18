@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { CATEGORIES } from "./data/categories.js";
 import { resolveVideoId, YouTubeSearchError } from "./youtube/youtubeSearch.js";
+import {
+  setMediaSessionMetadata,
+  setMediaSessionPlaybackState,
+  registerMediaSessionHandlers,
+} from "./mediaSession.js";
 import { WheelIcon } from "./components/Icons.jsx";
 import Hero from "./components/Hero.jsx";
 import SearchBar from "./components/SearchBar.jsx";
@@ -24,6 +29,7 @@ export default function App() {
   const [status, setStatus] = useState("idle"); // idle | resolving | ready | error
   const [errorMessage, setErrorMessage] = useState("");
   const [playerReady, setPlayerReady] = useState(false);
+  const [nowPlayingMeta, setNowPlayingMeta] = useState(null); // { title, channelTitle, thumbnail }
 
   const playerRef = useRef(null);
   const pollRef = useRef(null);
@@ -53,6 +59,11 @@ export default function App() {
       try {
         const result = await resolveVideoId(currentSong.query, currentSong.id);
         playerRef.current.loadVideo(result.videoId, autoplay);
+        setNowPlayingMeta({
+          title: currentSong.title,
+          channelTitle: currentSong.artist || result.channelTitle,
+          thumbnail: result.thumbnail,
+        });
         setStatus("ready");
       } catch (err) {
         setStatus("error");
@@ -75,6 +86,37 @@ export default function App() {
   useEffect(() => {
     if (playerRef.current) playerRef.current.setVolume(volume);
   }, [volume]);
+
+  // Keep the OS lock-screen / notification / hardware-key controls in sync
+  useEffect(() => {
+    if (nowPlayingMeta) {
+      setMediaSessionMetadata({
+        title: nowPlayingMeta.title,
+        artist: nowPlayingMeta.channelTitle,
+        artwork: nowPlayingMeta.thumbnail,
+      });
+    }
+  }, [nowPlayingMeta]);
+
+  useEffect(() => {
+    setMediaSessionPlaybackState(playing);
+  }, [playing]);
+
+  useEffect(() => {
+    registerMediaSessionHandlers({
+      onPlay: () => playerRef.current && playerRef.current.play(),
+      onPause: () => playerRef.current && playerRef.current.pause(),
+      onNext: () => {
+        wantPlayRef.current = true;
+        goNext();
+      },
+      onPrev: () => {
+        wantPlayRef.current = true;
+        goPrev();
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [songs.length, shuffle]);
 
   useEffect(() => {
     if (playing) {
@@ -181,6 +223,16 @@ export default function App() {
         <span className="nav-pill mono">FULL JOSH</span>
       </nav>
 
+      {activeCategory && currentSong && playing && (
+        <div className="now-playing-ribbon">
+          <div className="now-playing-ribbon-track">
+            <span>♪ Now playing: {currentSong.title} — {currentSong.artist || "Bhojpuri"} ♪</span>
+            <span>♪ Now playing: {currentSong.title} — {currentSong.artist || "Bhojpuri"} ♪</span>
+          </div>
+        </div>
+      )}
+
+      <div key={activeCategory ? activeCategory.id : "home"} className="view-transition">
       {!activeCategory && (
         <>
           <Hero playing={false} />
@@ -228,6 +280,7 @@ export default function App() {
           />
         </>
       )}
+      </div>
 
       {activeCategory && currentSong && (
         <PlayerBar

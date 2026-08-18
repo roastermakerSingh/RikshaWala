@@ -17,6 +17,23 @@ hosted on YouTube by the rights holder / official channel.
 Song lists live in `src/data/categories.js` as plain title strings used only
 as search queries — no audio or lyrics are stored in the repo.
 
+## Background / lock-screen playback
+
+The app wires up the **Media Session API** (`src/mediaSession.js`), which gives
+you real play/pause/next/prev controls and the song title on:
+
+- your phone's **lock screen** and notification shade
+- your computer's **keyboard media keys** / OS media overlay
+
+Music keeps playing while you lock your phone, switch to another app, or
+minimize the browser tab.
+
+**One hard limit that no website can get around:** playback stops if you
+fully close/quit the browser. That's a browser/OS restriction, not something
+any web app's code can override — only an installed native app can survive
+that. Minimizing, switching tabs, or locking the screen is fine; force-quitting
+the browser is not.
+
 ## 1. Get a free YouTube Data API key
 
 1. Go to the [YouTube Data API v3 page](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
@@ -88,6 +105,7 @@ src/
     Playlist.jsx                   scrollable track grid with loading/playing states
     PlayerBar.jsx                   fixed bottom player (progress, shuffle, repeat, volume)
     YouTubePlayer.jsx               hidden YouTube IFrame player, exposed via ref
+  mediaSession.js                 lock-screen / hardware-key controls (Media Session API)
   App.jsx                         category navigation, search resolution, playback wiring
   main.jsx                         React entry point
   index.css                        all styles

@@ -81,9 +81,12 @@ export default function PlayerBar({
           <button className="ctrl-btn" onClick={onPrev} aria-label="Previous">
             <PrevIcon />
           </button>
-          <button className="ctrl-btn play-btn" onClick={onTogglePlay} aria-label="Play or pause">
-            {loading ? <span className="spinner spinner-dark" /> : playing ? <PauseIcon /> : <PlayIcon />}
-          </button>
+          <div className="play-btn-wrap">
+            <button className="ctrl-btn play-btn" onClick={onTogglePlay} aria-label="Play or pause">
+              {loading ? <span className="spinner spinner-dark" /> : playing ? <PauseIcon /> : <PlayIcon />}
+            </button>
+            {playing && <span className="play-btn-pulse" aria-hidden="true"></span>}
+          </div>
           <button className="ctrl-btn" onClick={onNext} aria-label="Next">
             <NextIcon />
           </button>
@@ -110,6 +113,7 @@ export default function PlayerBar({
           />
         </div>
       </div>
+      <div className="lock-screen-hint mono">Tip: lock your phone or switch apps — controls stay on your lock screen 🔒</div>
     </div>
   );
 }

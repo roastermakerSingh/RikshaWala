@@ -78,6 +78,11 @@ const NEW_2025_2026_TITLES = [
   "New Bhojpuri Song 2026 Samar Singh",
   "New Bhojpuri Song 2026 Golu Raja",
   "New Bhojpuri Song 2025 Arvind Akela Kallu",
+  "Kamariya Coca Cola Khesari Lal Yadav",
+  "Kamar Ke Kamai Khesari Lal Yadav Namrata Malla",
+  "New Bhojpuri Song 2026 Neelkamal Singh",
+  "New Bhojpuri Song 2026 Khesari Lal Yadav Shilpi Raj",
+  "New Bhojpuri Song 2025 Pawan Singh",
 ];
 
 const ORCHESTRA_TITLES = [
