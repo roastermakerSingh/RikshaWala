@@ -49,6 +49,7 @@ export default function PlayerBar({
 
   return (
     <div className="player-bar">
+      <div className="player-bar-pinstripe"></div>
       <div className="road" ref={roadRef} onClick={handleSeek}>
         <div className="road-track">
           <div className="road-fill" style={{ width: pct + "%" }}></div>

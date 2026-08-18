@@ -13,6 +13,7 @@ import Playlist from "./components/Playlist.jsx";
 import PlayerBar from "./components/PlayerBar.jsx";
 import YouTubePlayer from "./components/YouTubePlayer.jsx";
 import CategoryGrid from "./components/CategoryGrid.jsx";
+import InstallPrompt from "./components/InstallPrompt.jsx";
 
 const YT_STATE = { ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 };
 
@@ -30,10 +31,17 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [playerReady, setPlayerReady] = useState(false);
   const [nowPlayingMeta, setNowPlayingMeta] = useState(null); // { title, channelTitle, thumbnail }
+  const [scrolled, setScrolled] = useState(false);
 
   const playerRef = useRef(null);
   const pollRef = useRef(null);
   const wantPlayRef = useRef(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const activeCategory = useMemo(
     () => CATEGORIES.find((c) => c.id === categoryId) || null,
@@ -215,13 +223,16 @@ export default function App() {
         }}
       />
 
-      <nav className="nav">
+      <nav className={"nav" + (scrolled ? " scrolled" : "")}>
         <button className="brand" onClick={goHome} aria-label="Go to home">
           <WheelIcon size={26} />
           <span className="brand-name">RICKSHA WALA</span>
         </button>
         <span className="nav-pill mono">FULL JOSH</span>
+        <div className="pinstripe nav-pinstripe"></div>
       </nav>
+
+      <InstallPrompt />
 
       {activeCategory && currentSong && playing && (
         <div className="now-playing-ribbon">
