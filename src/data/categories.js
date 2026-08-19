@@ -214,7 +214,6 @@ const HINDI_SPECIAL_SONGSd = [
 // Classic 90s/2000s Bollywood romantic songs — title-only, no fixed artist,
 // resolved via a generic Bollywood-song search query.
 const HINDI_SPECIAL_SONGS = [
-  { title: "Mujhse Juda Hokar lata mangeshkar and sp balasubramaniam" },
   { title: "Dil To Pagal Hai" },
   { title: "Bhula Denge Tumko Sanam" },
   { title: "Dil Ke Badle Sanam" },
@@ -233,7 +232,6 @@ const HINDI_SPECIAL_SONGS = [
   { title: "Aankhein Khuli Ho Ya Ho Band" },
   { title: "Hum Tumko Nigahon Mein" },
   { title: "Kyunki Itna Pyaar Tumko" },
-  { title: "Ishq De Fanniyar" },
 ];
 
 const ORCHESTRA_TITLES = [
