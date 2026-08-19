@@ -172,6 +172,44 @@ const NEW_2025_2026_SONGS = [
 
 // Well-known Hindi/Bollywood songs spanning different eras — used purely as
 // YouTube search queries, same as every other category.
+const HINDI_SPECIAL_SONGSd = [
+  { title: "Kesariya", artist: "Arijit Singh", film: "Brahmastra" },
+  { title: "Tum Hi Ho", artist: "Arijit Singh", film: "Aashiqui 2" },
+  { title: "Tera Ban Jaunga", artist: "Akhil Sachdeva", film: "Kabir Singh" },
+  { title: "Raataan Lambiyan", artist: "Jubin Nautiyal", film: "Shershaah" },
+  { title: "Chaiyya Chaiyya", artist: "Sukhwinder Singh", film: "Dil Se" },
+  { title: "Kabira", artist: "Tochi Raina", film: "Yeh Jawaani Hai Deewani" },
+  { title: "Gerua", artist: "Arijit Singh", film: "Dilwale" },
+  {
+    title: "Channa Mereya",
+    artist: "Arijit Singh",
+    film: "Ae Dil Hai Mushkil",
+  },
+  { title: "Agar Tum Saath Ho", artist: "Alka Yagnik", film: "Tamasha" },
+  { title: "Bekhayali", artist: "Sachet Tandon", film: "Kabir Singh" },
+  { title: "Dil Diyan Gallan", artist: "Atif Aslam", film: "Tiger Zinda Hai" },
+  { title: "Ilahi", artist: "Arijit Singh", film: "Yeh Jawaani Hai Deewani" },
+  { title: "Kal Ho Naa Ho", artist: "Sonu Nigam", film: "Kal Ho Naa Ho" },
+  {
+    title: "Zara Zara",
+    artist: "Bombay Jayashri",
+    film: "Rehna Hai Terre Dil Mein",
+  },
+  {
+    title: "Tujhe Dekha To",
+    artist: "Kumar Sanu",
+    film: "Dilwale Dulhania Le Jayenge",
+  },
+  { title: "Apna Time Aayega", artist: "Ranveer Singh", film: "Gully Boy" },
+  { title: "Malang", artist: "Ved Sharma", film: "Malang" },
+  { title: "Kar Har Maidaan Fateh", artist: "Sukhwinder Singh", film: "Sanju" },
+  {
+    title: "Ae Dil Hai Mushkil",
+    artist: "Arijit Singh",
+    film: "Ae Dil Hai Mushkil",
+  },
+  { title: "Tere Naam", artist: "Udit Narayan", film: "Tere Naam" },
+];
 
 // Classic 90s/2000s Bollywood romantic songs — title-only, no fixed artist,
 // resolved via a generic Bollywood-song search query.
@@ -297,12 +335,12 @@ export const CATEGORIES = [
         artist: s.artist,
         query: `${s.title} ${s.artist} ${s.film} full video song`.trim(),
       })),
-      ...OLD_ROMANTIC_SONGS.map((title, i) => ({
-        id: `hindi-old-${i + 1}`,
-        title,
-        artist: "",
-        query: `${title} old Hindi romantic song`,
-      })),
+      // ...OLD_ROMANTIC_SONGS.map((title, i) => ({
+      //   id: `hindi-old-${i + 1}`,
+      //   title,
+      //   artist: "",
+      //   query: `${title} old Hindi romantic song`,
+      // })),
     ],
   },
 ];
