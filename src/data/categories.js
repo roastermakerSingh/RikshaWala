@@ -333,7 +333,7 @@ export const CATEGORIES = [
         id: `hindi-${i + 1}`,
         title: s.title,
         artist: s.artist,
-        query: `${s.title} ${s.artist} ${s.film} full video song`.trim(),
+        query: `${s.title}  full video song`.trim(),
       })),
       // ...OLD_ROMANTIC_SONGS.map((title, i) => ({
       //   id: `hindi-old-${i + 1}`,
