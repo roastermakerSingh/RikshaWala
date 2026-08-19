@@ -1,17 +1,13 @@
 import { useRef } from "react";
 import {
   WheelIcon,
-  MiniRickshaw,
   PlayIcon,
   PauseIcon,
   NextIcon,
   PrevIcon,
   ShuffleIcon,
   RepeatIcon,
-  VolumeIcon,
 } from "./Icons.jsx";
-
-const COLORS = ["var(--green)", "var(--red)", "var(--yellow-dark)", "#7A5C1E", "#2E5F8A", "#8A3E5F"];
 
 function fmt(s) {
   if (!s || isNaN(s)) return "0:00";
@@ -22,99 +18,83 @@ function fmt(s) {
 
 export default function PlayerBar({
   song,
-  index,
+  thumbnail,
   playing,
   loading,
   progress,
   duration,
-  volume,
   shuffle,
   repeat,
   onTogglePlay,
   onNext,
   onPrev,
   onSeek,
-  onVolumeChange,
   onToggleShuffle,
   onToggleRepeat,
 }) {
-  const roadRef = useRef(null);
+  const trackRef = useRef(null);
   const pct = duration ? (progress / duration) * 100 : 0;
 
   const handleSeek = (e) => {
-    const rect = roadRef.current.getBoundingClientRect();
+    const rect = trackRef.current.getBoundingClientRect();
     const p = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
     onSeek(p);
   };
 
   return (
-    <div className="player-bar">
-      <div className="player-bar-pinstripe"></div>
-      <div className="road" ref={roadRef} onClick={handleSeek}>
-        <div className="road-track">
-          <div className="road-fill" style={{ width: pct + "%" }}></div>
+    <div className="player-pill">
+      <div className={"player-pill-art" + (playing ? " spinning" : "")}>
+        {thumbnail ? (
+          <img src={thumbnail} alt="" />
+        ) : (
+          <div className="player-pill-art-fallback">
+            <WheelIcon size={26} />
+          </div>
+        )}
+      </div>
+
+      <div className="player-pill-mid">
+        <div className="player-pill-title">
+          {song.title}
+          {song.artist ? <span> · {song.artist}</span> : null}
         </div>
-        <div className="road-rickshaw" style={{ left: pct + "%" }}>
-          <MiniRickshaw />
+        <div className="player-pill-progress" ref={trackRef} onClick={handleSeek}>
+          <div className="player-pill-progress-fill" style={{ width: pct + "%" }}></div>
+          <div className="player-pill-progress-dot" style={{ left: pct + "%" }}></div>
+        </div>
+        <div className="player-pill-times mono">
+          <span>{fmt(progress)}</span>
+          <span>{fmt(duration)}</span>
         </div>
       </div>
-      <div className="player-controls">
-        <div className="now-playing">
-          <div className="track-thumb" style={{ background: COLORS[index % COLORS.length] }}>
-            <WheelIcon size={16} />
-          </div>
-          <div>
-            <div className="now-title">{song.title}</div>
-            <div className="now-artist">{song.artist}</div>
-          </div>
-        </div>
 
-        <span className="time-label">{fmt(progress)}</span>
-
-        <div className="ctrl-btns">
-          <button
-            className={"ctrl-btn" + (shuffle ? " active-toggle" : "")}
-            onClick={onToggleShuffle}
-            aria-label="Toggle shuffle"
-          >
-            <ShuffleIcon />
-          </button>
-          <button className="ctrl-btn" onClick={onPrev} aria-label="Previous">
-            <PrevIcon />
-          </button>
-          <div className="play-btn-wrap">
-            <button className="ctrl-btn play-btn" onClick={onTogglePlay} aria-label="Play or pause">
-              {loading ? <span className="spinner spinner-dark" /> : playing ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            {playing && <span className="play-btn-pulse" aria-hidden="true"></span>}
-          </div>
-          <button className="ctrl-btn" onClick={onNext} aria-label="Next">
-            <NextIcon />
-          </button>
-          <button
-            className={"ctrl-btn" + (repeat ? " active-toggle" : "")}
-            onClick={onToggleRepeat}
-            aria-label="Toggle repeat"
-          >
-            <RepeatIcon />
-          </button>
-        </div>
-
-        <span className="time-label">{fmt(duration)}</span>
-
-        <div className="vol-wrap">
-          <VolumeIcon />
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-          />
-        </div>
+      <div className="player-pill-controls">
+        <button
+          className={"pill-icon-btn" + (shuffle ? " active-toggle" : "")}
+          onClick={onToggleShuffle}
+          aria-label="Toggle shuffle"
+          title="Shuffle"
+        >
+          <ShuffleIcon />
+        </button>
+        <button className="pill-icon-btn" onClick={onPrev} aria-label="Previous">
+          <PrevIcon />
+        </button>
+        <button className="pill-play-btn" onClick={onTogglePlay} aria-label="Play or pause">
+          {loading ? <span className="spinner spinner-dark" /> : playing ? <PauseIcon /> : <PlayIcon />}
+        </button>
+        <button className="pill-icon-btn" onClick={onNext} aria-label="Next">
+          <NextIcon />
+        </button>
+        <button
+          className={"pill-icon-btn" + (repeat ? " active-toggle" : "")}
+          onClick={onToggleRepeat}
+          aria-label="Toggle repeat"
+          title="Repeat"
+        >
+          <RepeatIcon />
+        </button>
       </div>
-      <div className="lock-screen-hint mono">Tip: lock your phone or switch apps — controls stay on your lock screen 🔒</div>
     </div>
   );
 }
