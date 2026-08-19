@@ -214,7 +214,7 @@ const HINDI_SPECIAL_SONGSd = [
 // Classic 90s/2000s Bollywood romantic songs — title-only, no fixed artist,
 // resolved via a generic Bollywood-song search query.
 const HINDI_SPECIAL_SONGS = [
-  { title: "Mujhse Juda Hokar" },
+  { title: "Mujhse Juda Hokar lata mangeshkar and sp balasubramaniam" },
   { title: "Dil To Pagal Hai" },
   { title: "Bhula Denge Tumko Sanam" },
   { title: "Dil Ke Badle Sanam" },
