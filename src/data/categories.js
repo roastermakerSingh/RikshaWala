@@ -170,6 +170,34 @@ const NEW_2025_2026_SONGS = [
   { title: "Luliya Mangele Luliya Ka Magele", artist: "" },
 ];
 
+// Well-known Hindi/Bollywood songs spanning different eras — used purely as
+// YouTube search queries, same as every other category.
+
+// Classic 90s/2000s Bollywood romantic songs — title-only, no fixed artist,
+// resolved via a generic Bollywood-song search query.
+const HINDI_SPECIAL_SONGS = [
+  { title: "Mujhse Juda Hokar" },
+  { title: "Dil To Pagal Hai" },
+  { title: "Bhula Denge Tumko Sanam" },
+  { title: "Dil Ke Badle Sanam" },
+  { title: "Chupana Bhi Nahi Aata" },
+  { title: "Tera Dil Mere Paas Rehne Do" },
+  { title: "Pehli Baar Dil Yun" },
+  { title: "Hum Lakh Chupaye Pyaar" },
+  { title: "Aaye Ho Meri Zindagi Mein Tum Bahaar Banke" },
+  { title: "Allah Kare Dil Na Lage Kisi Se" },
+  { title: "Chori Chori Dil Tera Churayenge" },
+  { title: "Milte Milte Haseen Wadiyon Mein" },
+  { title: "Woh Ladki Bahut Yaad Aati Hai" },
+  { title: "Jitni Dafa Dekhun Tujhe" },
+  { title: "Tu Pyaar Hai Kisi Aur Ka" },
+  { title: "Raah Mein Unse Mulaqat Ho Gayi" },
+  { title: "Aankhein Khuli Ho Ya Ho Band" },
+  { title: "Hum Tumko Nigahon Mein" },
+  { title: "Kyunki Itna Pyaar Tumko" },
+  { title: "Ishq De Fanniyar" },
+];
+
 const ORCHESTRA_TITLES = [
   "Lollypop Lagelu",
   "Lehenga Las Las Karta",
@@ -256,6 +284,26 @@ export const CATEGORIES = [
     tagline: "Live band aur orchestra ke josh",
     accent: "#2E5F8A",
     songs: makeSongs("", ORCHESTRA_TITLES, "Bhojpuri live"),
+  },
+  {
+    id: "hindi-special",
+    name: "Hindi Special Songs",
+    tagline: "Bollywood ke sabse pasandida gaane",
+    accent: "#7A3E9D",
+    songs: [
+      ...HINDI_SPECIAL_SONGS.map((s, i) => ({
+        id: `hindi-${i + 1}`,
+        title: s.title,
+        artist: s.artist,
+        query: `${s.title} ${s.artist} ${s.film} full video song`.trim(),
+      })),
+      ...OLD_ROMANTIC_SONGS.map((title, i) => ({
+        id: `hindi-old-${i + 1}`,
+        title,
+        artist: "",
+        query: `${title} old Hindi romantic song`,
+      })),
+    ],
   },
 ];
 
