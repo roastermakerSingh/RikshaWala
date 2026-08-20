@@ -19,6 +19,7 @@
   --text-faint:#a89f7c;
   --chip-bg:#F0E6C4;
   --search-icon:#a89f7c;
+  --active-track-bg:#F1F8F0;
 }
 [data-theme="dark"]{
   --bg:#15110c;
@@ -29,6 +30,7 @@
   --text-faint:#8f8266;
   --chip-bg:#2c2114;
   --search-icon:#8f8266;
+  --active-track-bg:#1c2b1f;
 }
 *{box-sizing:border-box;}
 html,body,#root{margin:0;padding:0;height:100%;}
@@ -281,7 +283,7 @@ input:focus-visible,
   flex:1;font-size:14px;
   background:transparent;
   font-family:'Poppins',sans-serif;
-  color:var(--ink);
+  color:var(--text);
 }
 .search-box svg{flex-shrink:0;color:var(--search-icon);transition:color .15s ease;}
 .search-box:focus-within svg{color:var(--green);}
@@ -290,9 +292,10 @@ input:focus-visible,
 .section-label{
   max-width:1000px;margin:0 auto;padding:0 28px;
   display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;row-gap:8px;column-gap:12px;
   margin-top:28px;margin-bottom:18px;
 }
-.section-label h2{font-size:22px;}
+.section-label h2{font-size:22px;min-width:0;overflow-wrap:break-word;}
 .section-label .count{
   font-family:'Space Mono',monospace;
   font-size:12px;color:var(--text-muted);
@@ -412,7 +415,7 @@ input:focus-visible,
 .track-card:active{transform:scale(0.98);}
 .track-card.active{
   border-color:var(--green);
-  background:#F1F8F0;
+  background:var(--active-track-bg);
   box-shadow:0 0 0 3px rgba(31,110,67,0.1);
 }
 .track-num{
@@ -431,7 +434,7 @@ input:focus-visible,
 }
 .track-card:hover .track-thumb{transform:rotate(-6deg) scale(1.05);}
 .track-info{flex:1;min-width:0;}
-.track-title{font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.track-title{font-weight:600;font-size:14.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .track-artist{font-size:12.5px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .track-dur{
   font-family:'Space Mono',monospace;
@@ -472,7 +475,7 @@ input:focus-visible,
 /* ---------- SPINNER ---------- */
 .spinner{
   width:16px;height:16px;
-  border:2px solid #d8cfa8;
+  border:2px solid var(--card-border);
   border-top-color:var(--green);
   border-radius:50%;
   display:inline-block;
@@ -582,6 +585,7 @@ input:focus-visible,
   .playlist{padding:0 16px;grid-template-columns:1fr;}
   .section-label{padding:0 16px;}
   .search-wrap{padding:0 16px;}
+  .status-banner{padding:10px 16px;}
   .player-pill{
     left:12px;right:12px;bottom:12px;
     width:auto;max-width:none;
