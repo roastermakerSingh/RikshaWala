@@ -7,6 +7,7 @@ import {
   registerMediaSessionHandlers,
 } from "./mediaSession.js";
 import { WheelIcon } from "./components/Icons.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 import Hero from "./components/Hero.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import Playlist from "./components/Playlist.jsx";
@@ -54,12 +55,12 @@ export default function App() {
 
   const viewCategory = useMemo(
     () => CATEGORIES.find((c) => c.id === viewCategoryId) || null,
-    [viewCategoryId],
+    [viewCategoryId]
   );
 
   const playingCategory = useMemo(
     () => CATEGORIES.find((c) => c.id === playingCategoryId) || null,
-    [playingCategoryId],
+    [playingCategoryId]
   );
 
   // The queue actually loaded in the player — independent of what's on screen.
@@ -94,12 +95,12 @@ export default function App() {
         setErrorMessage(
           err instanceof YouTubeSearchError
             ? err.message
-            : "Couldn't load this song. Check your connection and try again.",
+            : "Couldn't load this song. Check your connection and try again."
         );
         setPlaying(false);
       }
     },
-    [currentSong, playerReady],
+    [currentSong, playerReady]
   );
 
   useEffect(() => {
@@ -139,9 +140,7 @@ export default function App() {
   }, [shuffle, queue.length]);
 
   const goPrev = useCallback(() => {
-    setCurrentIndex((c) =>
-      queue.length ? (c - 1 + queue.length) % queue.length : c,
-    );
+    setCurrentIndex((c) => (queue.length ? (c - 1 + queue.length) % queue.length : c));
   }, [queue.length]);
 
   useEffect(() => {
@@ -228,8 +227,7 @@ export default function App() {
     setQuery("");
   };
 
-  const isViewingPlayingCategory =
-    viewCategoryId === playingCategoryId && playingCategoryId !== null;
+  const isViewingPlayingCategory = viewCategoryId === playingCategoryId && playingCategoryId !== null;
 
   return (
     <>
@@ -239,9 +237,7 @@ export default function App() {
         onStateChange={handlePlayerStateChange}
         onError={() => {
           setStatus("error");
-          setErrorMessage(
-            "YouTube couldn't play this video. Try the next song.",
-          );
+          setErrorMessage("YouTube couldn't play this video. Try the next song.");
           setPlaying(false);
         }}
       />
@@ -260,12 +256,21 @@ export default function App() {
         <div className="nav-pills">
           <a
             className="nav-pill mono"
+            href="https://www.youtube.com/watch?v=LChlPaLTs0s&list=RDLChlPaLTs0s"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ♪ YouTube Mix ↗
+          </a>
+          <a
+            className="nav-pill mono"
             href="https://www.linkedin.com/in/sonu-profile-url"
             target="_blank"
             rel="noopener noreferrer"
           >
             Creator ↗
           </a>
+          <ThemeToggle />
         </div>
         <div className="pinstripe nav-pinstripe"></div>
       </nav>
@@ -276,85 +281,61 @@ export default function App() {
         {currentSong && playing && (
           <div className="now-playing-ribbon">
             <div className="now-playing-ribbon-track">
-              <span>
-                ♪ Now playing: {currentSong.title} —{" "}
-                {currentSong.artist || "Bhojpuri"} ♪
-              </span>
-              <span>
-                ♪ Now playing: {currentSong.title} —{" "}
-                {currentSong.artist || "Bhojpuri"} ♪
-              </span>
+              <span>♪ Now playing: {currentSong.title} — {currentSong.artist || "Bhojpuri"} ♪</span>
+              <span>♪ Now playing: {currentSong.title} — {currentSong.artist || "Bhojpuri"} ♪</span>
             </div>
           </div>
         )}
 
-        <div
-          key={viewCategory ? viewCategory.id : "home"}
-          className="view-transition"
-        >
-          {!viewCategory && (
-            <>
-              <Hero />
-              <div className="section-label">
-                <h2>Choose your playlist</h2>
-                <span className="count mono">
-                  {CATEGORIES.length} categories
-                </span>
-              </div>
-              <CategoryGrid
-                categories={CATEGORIES}
-                onSelect={openCategory}
-                playingCategoryId={playingCategoryId}
-              />
-            </>
+        <div key={viewCategory ? viewCategory.id : "home"} className="view-transition">
+        {!viewCategory && (
+          <>
+            <Hero />
+          <div className="section-label">
+            <h2>Choose your playlist</h2>
+            <span className="count mono">{CATEGORIES.length} categories</span>
+          </div>
+          <CategoryGrid categories={CATEGORIES} onSelect={openCategory} playingCategoryId={playingCategoryId} />
+        </>
+      )}
+
+      {viewCategory && (
+        <>
+          <div className="category-header">
+            <button className="back-btn" onClick={goHome}>
+              &larr; All categories
+            </button>
+            <h2>{viewCategory.name}</h2>
+            <p className="category-header-tagline">{viewCategory.tagline}</p>
+          </div>
+
+          <SearchBar value={query} onChange={setQuery} />
+
+          <div className="section-label">
+            <h2>{viewCategory.name}</h2>
+            <span className="count mono">{filteredSongs.length} tracks</span>
+          </div>
+
+          {status === "error" && isViewingPlayingCategory && (
+            <div className="status-banner status-error">{errorMessage}</div>
+          )}
+          {!import.meta.env.VITE_YOUTUBE_API_KEY && (
+            <div className="status-banner status-warning">
+              Add a YouTube Data API key to your .env file to enable playback — see README.md.
+            </div>
           )}
 
-          {viewCategory && (
-            <>
-              <div className="category-header">
-                <button className="back-btn" onClick={goHome}>
-                  &larr; All categories
-                </button>
-                <h2>{viewCategory.name}</h2>
-                <p className="category-header-tagline">
-                  {viewCategory.tagline}
-                </p>
-              </div>
-
-              <SearchBar value={query} onChange={setQuery} />
-
-              <div className="section-label">
-                <h2>{viewCategory.name}</h2>
-                <span className="count mono">
-                  {filteredSongs.length} tracks
-                </span>
-              </div>
-
-              {status === "error" && isViewingPlayingCategory && (
-                <div className="status-banner status-error">{errorMessage}</div>
-              )}
-              {!import.meta.env.VITE_YOUTUBE_API_KEY && (
-                <div className="status-banner status-warning">
-                  Add a YouTube Data API key to your .env file to enable
-                  playback — see README.md.
-                </div>
-              )}
-
-              <Playlist
-                songs={filteredSongs}
-                currentId={
-                  isViewingPlayingCategory && currentSong
-                    ? currentSong.id
-                    : null
-                }
-                playing={playing}
-                loading={isViewingPlayingCategory && status === "resolving"}
-                duration={duration}
-                onSelect={selectSong}
-              />
-            </>
-          )}
-        </div>
+          <Playlist
+            songs={filteredSongs}
+            currentId={isViewingPlayingCategory && currentSong ? currentSong.id : null}
+            playing={playing}
+            loading={isViewingPlayingCategory && status === "resolving"}
+            duration={duration}
+            onSelect={selectSong}
+          />
+        </>
+      )}
+      </div>
       </div>
 
       {currentSong && (

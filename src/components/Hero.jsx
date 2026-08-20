@@ -16,9 +16,20 @@ function ClockWidget() {
 }
 
 function StringLights() {
-  const colors = ["#F5B301", "#C1440E", "#1F6E43", "#F5B301", "#8C2A44", "#F5B301"];
+  const colors = [
+    "#F5B301",
+    "#C1440E",
+    "#1F6E43",
+    "#F5B301",
+    "#8C2A44",
+    "#F5B301",
+  ];
   return (
-    <svg className="string-lights" viewBox="0 0 1200 90" preserveAspectRatio="none">
+    <svg
+      className="string-lights"
+      viewBox="0 0 1200 90"
+      preserveAspectRatio="none"
+    >
       <path
         d="M0 20 Q 150 70 300 25 T 600 30 T 900 20 T 1200 30"
         fill="none"
@@ -30,9 +41,19 @@ function StringLights() {
         const x = (1200 / 15) * i;
         const y = 22 + Math.sin(i * 0.9) * 22;
         return (
-          <g key={i} className="bulb" style={{ animationDelay: `${(i % 5) * 0.3}s` }}>
+          <g
+            key={i}
+            className="bulb"
+            style={{ animationDelay: `${(i % 5) * 0.3}s` }}
+          >
             <circle cx={x} cy={y + 10} r="5" fill={colors[i % colors.length]} />
-            <circle cx={x} cy={y + 10} r="9" fill={colors[i % colors.length]} opacity="0.25" />
+            <circle
+              cx={x}
+              cy={y + 10}
+              r="9"
+              fill={colors[i % colors.length]}
+              opacity="0.25"
+            />
           </g>
         );
       })}
@@ -76,10 +97,10 @@ export default function Hero() {
       <StringLights />
 
       <div className="hero-cinematic-content">
-        <div className="hero-eyebrow mono">Ricksha Wala · Bhojpuri Playlists</div>
-        <h1 className="hero-hindi">भोजपुरी एक्सप्रेस</h1>
+        <div className="hero-eyebrow mono">Ricksha Wala From Eksar</div>
+        <h1 className="hero-hindi">छपरा एक्सप्रेस</h1>
         <p className="hero-english">
-          Baitho Bhaiya, Chalo Gaon Ki Ore — pick a category below and let the ricksha roll.
+          Baitha Bhaiya, Chalo Eksar Ki Ore — आपन पसंददिदा गाना सुनत सुनत .
         </p>
       </div>
 
@@ -91,11 +112,25 @@ export default function Hero() {
         </g>
         <g className="wheel" style={{ transformOrigin: "95px 190px" }}>
           <circle cx="95" cy="190" r="28" fill="#0f0b07" />
-          <circle cx="95" cy="190" r="28" fill="none" stroke="#3a2f22" strokeWidth="3" />
+          <circle
+            cx="95"
+            cy="190"
+            r="28"
+            fill="none"
+            stroke="#3a2f22"
+            strokeWidth="3"
+          />
         </g>
         <g className="wheel" style={{ transformOrigin: "195px 190px" }}>
           <circle cx="195" cy="190" r="28" fill="#0f0b07" />
-          <circle cx="195" cy="190" r="28" fill="none" stroke="#3a2f22" strokeWidth="3" />
+          <circle
+            cx="195"
+            cy="190"
+            r="28"
+            fill="none"
+            stroke="#3a2f22"
+            strokeWidth="3"
+          />
         </g>
       </svg>
 
